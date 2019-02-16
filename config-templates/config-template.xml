@@ -1,0 +1,4 @@
+<EXAMPLE>
+	<VAR1>##var-to-be-replaced1##</VAR1>
+	<VAR2>##var-to-be-replaced2##</VAR2>
+</EXAMPLE>

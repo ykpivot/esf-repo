@@ -1,0 +1,25 @@
+resource_types:
+- name: svn-resource
+  type: docker-image
+  source:
+    repository: robophred/concourse-svn-resource
+    tag: alpha
+
+resources:
+- name: svn-repo
+  type: svn-resource
+  source:
+    repository: {{svn-repo-url}}
+    username: {{svn-username}}
+    password: {{svn-password}}
+
+
+jobs:
+  - name: prepare
+    - get: svn-repo
+        trigger: false
+    - task: prepare-esf-conifg
+      file: svn-code/tasks/prepare-config.yml
+        params:
+          CONFIG-VAR1: {{config-var1}}
+          CONFIG-VAR2: {{config-var2}}

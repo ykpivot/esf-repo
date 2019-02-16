@@ -1,0 +1,16 @@
+---
+platform: linux
+inputs:
+  - name: svn-repo
+outputs:
+  - name: config-files
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    env
+    sed -e 's/##var-to-be-replaced1##/${CONFIG_VAR1}/g' \
+     -e 's/##var-to-be-replaced2##/${CONFIG_VAR2}/g' \
+     svn-repo/config-templates/var-template.xml > config-files/var-config.xml
