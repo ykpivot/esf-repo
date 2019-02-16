@@ -1,25 +1,58 @@
-resource_types:
-- name: svn-resource
+resources:
+- name: esf-repo
+  type: git
+  source:
+    branch: master
+    uri: {{git-project-url}}
+    skip_ssl_verification: true
+
+- name: esf-docker-image
   type: docker-image
   source:
-    repository: robophred/concourse-svn-resource
-    tag: alpha
-
-resources:
-- name: svn-repo
-  type: svn-resource
-  source:
-    repository: {{svn-repo-url}}
-    username: {{svn-username}}
-    password: {{svn-password}}
-
+    repository: yosepk/esf-image
+    # repository: harbor.com:5000/foo/esf-image
+    username: {{docker-repo-username}}
+    password: {{docker-repo-password}}
 
 jobs:
-  - name: prepare
-    - get: svn-repo
-        trigger: false
-    - task: prepare-esf-conifg
-      file: svn-code/tasks/prepare-config.yml
-        params:
-          CONFIG-VAR1: {{config-var1}}
-          CONFIG-VAR2: {{config-var2}}
+- name: build-and-push
+  serial: true
+  plan:
+  - get: esf-repo
+    trigger: false
+  - task: prepare-esf-conifg
+    file: esf-repo/tasks/prepare-config.yml
+    params:
+      CONFIG_VAR1: {{config-var1}}
+      CONFIG_VAR2: {{config-var2}}
+  - put: esf-docker-image
+    params:
+      build: "."
+      dockerfile: esf-repo/Dockerfile
+
+- name: run-esf-test
+  plan:
+  - get: esf-repo
+  - get: esf-docker-image
+    passed: [build-and-push]
+    trigger: true
+  - task: run-esf-test
+    file: esf-repo/tasks/esf-test.yml
+
+- name: deploy-to-PKS
+  plan:
+  - get: esf-repo
+  - get: esf-docker-image
+    passed: [run-esf-test]
+    trigger: true
+  - task: deploy
+    file: esf-repo/tasks/deploy-to-pks.yml
+
+- name: run-smoke-test
+  plan:
+  - get: esf-repo
+  - get: esf-docker-image
+    passed: [deploy-to-PKS]
+    trigger: true
+  - task: run-smoke-test
+    file: esf-repo/tasks/smoke-test.yml

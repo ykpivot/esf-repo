@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ubuntu
+
+inputs:
+  - name: esf-repo
+
+outputs:
+  - name: config-files
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    env
+    echo "Run tests against the real endpoints on PKS"
