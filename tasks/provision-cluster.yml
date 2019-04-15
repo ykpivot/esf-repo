@@ -1,0 +1,17 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: jasonmorgan/ps-k8s-worker
+params:
+  PKS_CLUSTER: ((pks.cluster))
+  PKS_USER: ((pks.username))
+  PKS_PASSWORD: ((pks.password))
+  PKS_URL: ((pks.url))
+inputs:
+- name: source
+run:
+  path: /usr/bin/pwsh
+  args: 
+  - source/tasks/provision-cluster.sh
