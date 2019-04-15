@@ -18,14 +18,14 @@ resources:
   source:
     username: ((harbor.username))
     password: ((harbor.password))
-    repository: harbor.fiserv.com:443/esf/esf-client-base
+    repository: ((harbor.repo))
 
 - name: bump
   type: semver
   source:
     driver: git
     branch: master
-    uri: https://gitlower.onefiserv.net/esf/esfclientbase.git
+    uri: ((git.repo))
     file: CICD/metadata/tag
     username: ((git.username))
     password: ((git.password))
@@ -64,7 +64,7 @@ jobs:
     file: source/tasks/update-deployment.yml
     params:
       DEPLOYMENT: planespotter-frontend.yml
-      IMAGE_NAME: harbor.gcp.59s.io:443/59s/planespotter-frontend
+      IMAGE_NAME: ((harbor.repo))
   - put: cluster-repo
     params:
       repository: out
@@ -77,7 +77,7 @@ jobs:
   - task: provision-cluster
     file: cluster-state/ci/tasks/provision-cluster.yml
     params:
-      PKS_CLUSTER: ((PKS_CLUSTER))
-      PKS_USER: ((PKS_USER))
-      PKS_PASSWORD: ((PKS_PASSWORD))
-      PKS_URL: ((PKS_URL))
+      PKS_CLUSTER: ((pks.cluster))
+      PKS_USER: ((pks.user))
+      PKS_PASSWORD: ((pks.password))
+      PKS_URL: ((pks.url))
