@@ -16,4 +16,4 @@ git config --global user.email "esf@ci.cd"
 git config --global user.name "esf cicd"
 
 git add .
-git commit -m "Updates by Concourse"
+git commit -m "Updates version to $VERSION by Concourse"
