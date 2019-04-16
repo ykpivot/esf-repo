@@ -6,7 +6,9 @@ echo "Updating deployment"
 
 VERSION=$(cat bump/version)
 
-sed -e "s|${IMAGE_NAME}:.*|${IMAGE_NAME}:${VERSION}|g" source/pks/deployment.yml > source/pks/deployment-new.yml
+RESULT=$(sed -e "s|${IMAGE_NAME}:.*|${IMAGE_NAME}:${VERSION}|g" source/pks/deployment.yml)
+
+echo $RESULT
 
 cat source/pks/depoyment-new.yml
 
