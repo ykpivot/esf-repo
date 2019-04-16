@@ -67,6 +67,7 @@ jobs:
   - put: source
     params:
       repository: out
+      rebase: true
 
 - name: deploy-cluster
   serial: true
