@@ -13,6 +13,4 @@ inputs:
 outputs:
 - name: out
 run:
-  path: sh
-  args: 
-  - source/cicd/tasks/update-deployment.sh
+  path: source/cicd/tasks/update-deployment.sh
