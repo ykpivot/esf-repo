@@ -67,7 +67,7 @@ jobs:
   - put: source
     params:
       repository: out
-      merge: true
+      force: true
 
 - name: deploy-cluster
   serial: true
