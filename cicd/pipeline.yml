@@ -66,9 +66,10 @@ jobs:
 
 - name: update-deployment-version
   plan:
-  - get: deployment-source
+  - get: source
     trigger: true
     passed: [build-docker-image-tagged]
+  - get: deployment-source
   - get: bump
   - task: update-deployment
     file: source/cicd/tasks/update-deployment.yml
