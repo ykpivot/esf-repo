@@ -57,7 +57,7 @@ jobs:
   plan:
   - get: source
     trigger: true
-    passed: [build-docker-image-tagged]
+    #passed: [build-docker-image-tagged]
   - get: bump
   - task: update-deployment
     file: source/cicd/tasks/update-deployment.yml
