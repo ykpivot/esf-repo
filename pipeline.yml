@@ -1,58 +1,82 @@
+---
 resources:
-- name: esf-repo
+- name: source
   type: git
   source:
+    uri: ((git.url))
+    ignore_paths: 
+      - README.md
+      - .gitignore
+      - cicd/metadata/*
+      - cicd/pipeline.yml
     branch: master
-    uri: {{git-project-url}}
-    skip_ssl_verification: true
+    username: ((git.username))
+    password: ((git.password))
 
-- name: esf-docker-image
+- name: docker-image
   type: docker-image
   source:
-    repository: yosepk/esf-image
-    # repository: harbor.com:5000/foo/esf-image
-    username: {{docker-repo-username}}
-    password: {{docker-repo-password}}
+    username: ((harbor.username))
+    password: ((harbor.password))
+    repository: ((harbor.url))
+
+- name: bump
+  type: semver
+  source:
+    driver: git
+    branch: master
+    uri: ((git.url))
+    file: cicd/metadata/tag
+    username: ((git.username))
+    password: ((git.password))
 
 jobs:
-- name: build-and-push
+- name: build-docker-image-tagged
+  serial: true
+  plan:      
+  - get: source
+    trigger: true
+  - put: bump
+    params:
+      bump: patch
+  - put: docker-image
+    params:
+      build: source
+      tag: bump/version
+
+- name: build-docker-image-latest
   serial: true
   plan:
-  - get: esf-repo
-    trigger: false
-  - task: prepare-esf-conifg
-    file: esf-repo/tasks/prepare-config.yml
+  - get: source
+    trigger: true
+  - put: docker-image
     params:
-      CONFIG_VAR1: {{config-var1}}
-      CONFIG_VAR2: {{config-var2}}
-  - put: esf-docker-image
+      build: source
+
+- name: update-deployment-version
+  plan:
+  - get: source
+    trigger: true
+    passed: [build-docker-image-tagged]
+  - get: bump
+  - task: update-deployment
+    file: source/cicd/tasks/update-deployment.yml
     params:
-      build: "."
-      dockerfile: esf-repo/Dockerfile
+      DEPLOYMENT: deployment.yml
+      IMAGE_NAME: ((harbor.url))
+  - put: source
+    params:
+      repository: out
 
-- name: run-esf-test
+- name: deploy-cluster
+  serial: true
   plan:
-  - get: esf-repo
-  - get: esf-docker-image
-    passed: [build-and-push]
+  - get: source
     trigger: true
-  - task: run-esf-test
-    file: esf-repo/tasks/esf-test.yml
-
-- name: deploy-to-PKS
-  plan:
-  - get: esf-repo
-  - get: esf-docker-image
-    passed: [run-esf-test]
-    trigger: true
-  - task: deploy
-    file: esf-repo/tasks/deploy-to-pks.yml
-
-- name: run-smoke-test
-  plan:
-  - get: esf-repo
-  - get: esf-docker-image
-    passed: [deploy-to-PKS]
-    trigger: true
-  - task: run-smoke-test
-    file: esf-repo/tasks/smoke-test.yml
+  - task: provision-cluster
+    file: source/cicd/tasks/provision-cluster.yml
+    params:
+      PKS_CLUSTER: ((pks.cluster))
+      PKS_USER: ((pks.username))
+      PKS_PASSWORD: ((pks.password))
+      PKS_URL: ((pks.url))
