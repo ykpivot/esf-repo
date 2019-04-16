@@ -17,3 +17,4 @@ git config --global user.name "esf cicd"
 
 git add .
 git commit -m "Updates version to $VERSION by Concourse"
+

@@ -76,7 +76,7 @@ jobs:
     params:
       DEPLOYMENT: deployment.yml
       IMAGE_NAME: ((harbor.url))
-  - put: source
+  - put: deployment-source
     params:
       repository: out
       merge: true
