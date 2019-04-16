@@ -8,7 +8,6 @@ params:
   DEPLOYMENT:
   IMAGE_NAME:
 inputs:
-- name: cluster-repo
 - name: source
 - name: bump
 outputs:
