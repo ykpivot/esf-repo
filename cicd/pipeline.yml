@@ -3,12 +3,23 @@ resources:
 - name: source
   type: git
   source:
-    uri: ((git.url))
+    uri: ((git.url.source))
     ignore_paths: 
       - README.md
       - .gitignore
       - cicd/metadata/*
       - cicd/pipeline.yml
+    branch: master
+    username: ((git.username))
+    password: ((git.password))
+
+- name: deployment-source
+  type: git
+  source:
+    uri: ((git.url.deployment-source))
+    ignore_paths: 
+      - README.md
+      - .gitignore
     branch: master
     username: ((git.username))
     password: ((git.password))
@@ -25,7 +36,7 @@ resources:
   source:
     driver: git
     branch: master
-    uri: ((git.url))
+    uri: ((git.url.source))
     file: cicd/metadata/tag
     username: ((git.username))
     password: ((git.password))
@@ -55,7 +66,7 @@ jobs:
 
 - name: update-deployment-version
   plan:
-  - get: source
+  - get: deployment-source
     trigger: true
     passed: [build-docker-image-tagged]
   - get: bump
@@ -72,7 +83,7 @@ jobs:
 - name: deploy-pks-cluster
   serial: true
   plan:
-  - get: source
+  - get: deployment-source
     trigger: true
     passed: [update-deployment-version]
   - task: provision-cluster

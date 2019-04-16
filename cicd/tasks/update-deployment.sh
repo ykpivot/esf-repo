@@ -4,11 +4,11 @@ set -ex
 
 echo "Updating deployment"
 
-git clone source out
+git clone deployment-source out
 
 VERSION=$(cat bump/version)
 
-sed -e "s|${IMAGE_NAME}:.*|${IMAGE_NAME}:${VERSION}|g" source/pks/deployment.yml > out/pks/deployment.yml
+sed -e "s|${IMAGE_NAME}:.*|${IMAGE_NAME}:${VERSION}|g" deployment-source/pks/deployment.yml > out/pks/deployment.yml
 
 cd out
 
