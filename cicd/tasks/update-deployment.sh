@@ -2,4 +2,5 @@
 set -x
 
 echo "Updating deployment"
-cat source/pks/deployment.yml
+ls
+#cat source/pks/deployment.yml
