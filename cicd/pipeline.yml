@@ -74,7 +74,7 @@ jobs:
   plan:
   - get: source
     trigger: true
-    passed: [update-deployment-version]
+    #passed: [update-deployment-version]
   - task: provision-cluster
     file: source/cicd/tasks/provision-cluster.yml
     params:
