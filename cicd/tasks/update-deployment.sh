@@ -6,12 +6,14 @@ echo "Updating deployment"
 
 VERSION=$(cat bump/version)
 
-RESULT=$(sed -e "s|${IMAGE_NAME}:.*|${IMAGE_NAME}:${VERSION}|g" source/pks/deployment.yml)
+sed -e "s|${IMAGE_NAME}:.*|${IMAGE_NAME}:${VERSION}|g" source/pks/deployment.yml > out/deployment.yml
 
-echo $RESULT > deployment.yml
+cd out
 
-#cat source/pks/depoyment-new.yml
+git config --global user.email "esf@ci.cd"
+git config --global user.name "esf cicd"
 
-cat deployment.yml
+git add .
+git commit -m "Updates by Concourse"
 
-#mv source/pks/deployment-new.yml source/pks/deployment.yml
+exit 0
