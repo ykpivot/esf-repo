@@ -84,9 +84,10 @@ jobs:
 - name: deploy-pks-cluster
   serial: true
   plan:
-  - get: deployment-source
+  - get: source
     trigger: true
     passed: [update-deployment-version]
+  - get: deployment-source
   - task: provision-cluster
     file: source/cicd/tasks/provision-cluster.yml
     params:

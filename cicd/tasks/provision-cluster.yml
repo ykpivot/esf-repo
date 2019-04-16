@@ -11,5 +11,6 @@ params:
   PKS_URL: ((pks.url))
 inputs:
 - name: source
+- name: deployment-source
 run:
   path: source/cicd/tasks/provision-cluster.sh
