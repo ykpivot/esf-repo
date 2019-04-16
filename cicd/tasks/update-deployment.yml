@@ -8,6 +8,7 @@ params:
   DEPLOYMENT:
   IMAGE_NAME:
 inputs:
+- name: source
 - name: deployment-source
 - name: bump
 outputs:
