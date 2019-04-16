@@ -3,7 +3,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: jasonmorgan/pipelineworker
+    repository: alpine:latest
 params:
   DEPLOYMENT:
   IMAGE_NAME:
@@ -15,4 +15,4 @@ outputs:
 run:
   path: sh
   args: 
-  - source/tasks/update-deployment.sh
+  - source/cicd/tasks/update-deployment.sh
