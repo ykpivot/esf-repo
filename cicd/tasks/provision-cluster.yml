@@ -3,7 +3,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: jasonmorgan/ps-k8s-worker
+    repository: yosepk/pks-worker
 params:
   PKS_CLUSTER: ((pks.cluster))
   PKS_USER: ((pks.username))
@@ -12,6 +12,4 @@ params:
 inputs:
 - name: source
 run:
-  path: /usr/bin/pwsh
-  args: 
-  - source/tasks/provision-cluster.sh
+  path: source/cicd/tasks/provision-cluster.sh

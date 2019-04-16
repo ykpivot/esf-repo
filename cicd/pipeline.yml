@@ -67,9 +67,9 @@ jobs:
   - put: source
     params:
       repository: out
-      force: true
+      merge: true
 
-- name: deploy-cluster
+- name: deploy-pks-cluster
   serial: true
   plan:
   - get: source
