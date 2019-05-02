@@ -41,6 +41,11 @@ resources:
     username: ((git.username))
     password: ((git.password))
 
+- name: send-email
+  type: email
+  source:
+    from: your@email.com
+
 jobs:
 - name: build-docker-image-tagged
   serial: true
@@ -95,3 +100,14 @@ jobs:
       PKS_USER: ((pks.username))
       PKS_PASSWORD: ((pks.password))
       PKS_URL: ((pks.url))
+  - put: send-email
+      params:
+        to: [ 'to@email.com' ]
+        subject_text: "PKS deployment complete"
+        body_text: "Your content goes here."
+
+  on_failure:
+      put: send-email
+      params:
+        to: [ 'to@email.com' ]
+        subject: ./email-text/email-subject-failure.txt
